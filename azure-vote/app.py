@@ -25,21 +25,30 @@ from opencensus.trace.samplers import ProbabilitySampler
 from opencensus.trace.tracer import Tracer
 from opencensus.trace import config_integration
 from opencensus.ext.azure import metrics_exporter
-from opencensus.trace import config_integration
-
-# Logging
-# logger = # TODO: Setup logger
-logger = logging.getLogger(__name__)
-logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=4d16a2f3-f79f-449e-a333-ee03854d9489'))
-# Set the logging level
-logger.setLevel(logging.INFO)
 
 # Metrics
 stats = stats_module.stats
 view_manager = stats.view_manager
+config_integration.trace_integrations(["logging"])
+config_integration.trace_integrations(["requests"])
+
+# Logging
+# logger = # TODO: Setup logger
+logger = logging.getLogger(__name__)
+handler = AzureLogHandler(
+    connection_string="InstrumentationKey=41a5643a-b10e-44ea-bd91-c8ab5b5cfad5;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
+)
+handler.setFormatter(logging.Formatter("%(traceId)s %(spanId)s %(message)s"))
+logger.addHandler(handler)
+# Logging custom Events
+logger.addHandler(AzureLogHandler(connection_string="InstrumentationKey=41a5643a-b10e-44ea-bd91-c8ab5b5cfad5;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"))
+# Set the logging level
+logger.setLevel(logging.INFO)
+
+
 
 #exporter = # TODO: Setup exporter
-exporter = metrics_exporter.new_metrics_exporter(connection_string='InstrumentationKey=4d16a2f3-f79f-449e-a333-ee03854d9489')
+exporter = metrics_exporter.new_metrics_exporter(connection_string="InstrumentationKey=41a5643a-b10e-44ea-bd91-c8ab5b5cfad5;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/")
 view_manager.register_exporter(exporter)
 
 
@@ -50,12 +59,13 @@ view_manager.register_exporter(exporter)
 config_integration.trace_integrations(['httplib'])
 tracer = Tracer(
     exporter=AzureExporter(
-        connection_string='InstrumentationKey=4d16a2f3-f79f-449e-a333-ee03854d9489'
+        connection_string="InstrumentationKey=41a5643a-b10e-44ea-bd91-c8ab5b5cfad5;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
     ),
     sampler=ProbabilitySampler(1.0)
 )
 
-response = requests.get('http://localhost:5000')
+tracer.span(name="Cats")
+tracer.span(name="Dogs")
 
 app = Flask(__name__)
 
@@ -64,7 +74,7 @@ app = Flask(__name__)
 middleware = FlaskMiddleware(
     app,
     exporter=AzureExporter(
-        connection_string="InstrumentationKey=4d16a2f3-f79f-449e-a333-ee03854d9489"
+        connection_string="InstrumentationKey=41a5643a-b10e-44ea-bd91-c8ab5b5cfad5;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
     ),
     sampler=ProbabilitySampler(rate=1.0),
 )
@@ -95,8 +105,10 @@ if app.config['SHOWHOST'] == "true":
     title = socket.gethostname()
 
 # Init Redis
-if not r.get(button1): r.set(button1,0)
-if not r.get(button2): r.set(button2,0)
+if not r.get(button1): 
+    r.set(button1,0)
+if not r.get(button2): 
+    r.set(button2,0)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -124,7 +136,7 @@ def index():
             r.set(button2,0)
             vote1 = r.get(button1).decode('utf-8')
             properties = {'custom_dimensions': {'Cats Vote': vote1}}
-            # TODO: use logger object to log cat vote
+            # TODO: use logger object to log cat vote 
             logger.info('Cats Vote', extra=properties)
 
             vote2 = r.get(button2).decode('utf-8')
@@ -149,6 +161,9 @@ def index():
 
 if __name__ == "__main__":
     # comment line below when deploying to VMSS
-    #app.run() # local
+    #app.run(port=9999) # local
+    #app.run() # remote
     # uncomment the line below before deployment to VMSS
     app.run(host='localhost', port=8080, threaded=True)
+    #app.run(host="0.0.0.0", threaded=True, debug=True) 
+   

@@ -1,0 +1,69 @@
+Metadata-Version: 2.1
+Name: opencensus-ext-httplib
+Version: 0.7.5
+Summary: OpenCensus httplib Integration
+Home-page: https://github.com/census-instrumentation/opencensus-python/tree/master/contrib/opencensus-ext-httplib
+Author: OpenCensus Authors
+Author-email: census-developers@googlegroups.com
+License: Apache-2.0
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: opencensus (<1.0.0,>=0.8.0)
+
+OpenCensus httplib Integration
+============================================================================
+
+|pypi|
+
+.. |pypi| image:: https://badge.fury.io/py/opencensus-ext-httplib.svg
+   :target: https://pypi.org/project/opencensus-ext-httplib/
+
+OpenCensus can trace HTTP requests made with the httplib library.
+
+You can enable requests integration by specifying ``'httplib'`` to ``trace_integrations``.
+
+It's possible to configure a list of URL you don't want traced. See requests integration
+for more information. The only difference is that you need to specify hostname and port
+every time.
+
+Installation
+------------
+
+::
+
+    pip install opencensus-ext-httplib
+
+Usage
+-----
+
+.. code:: python
+
+    import requests
+    from opencensus.trace import config_integration
+    from opencensus.trace.tracer import Tracer
+
+    config_integration.trace_integrations(['httplib'])
+    tracer = Tracer()
+
+    with tracer.span(name='parent'):
+        response = requests.get('https://www.wikipedia.org/wiki/Rabbit')
+
+References
+----------
+
+* `OpenCensus Project <https://opencensus.io/>`_
+
+
