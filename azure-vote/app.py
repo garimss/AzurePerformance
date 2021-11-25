@@ -64,8 +64,7 @@ tracer = Tracer(
     sampler=ProbabilitySampler(1.0)
 )
 
-tracer.span(name="Cats")
-tracer.span(name="Dogs")
+
 
 app = Flask(__name__)
 
