@@ -36,19 +36,19 @@ config_integration.trace_integrations(["requests"])
 # logger = # TODO: Setup logger
 logger = logging.getLogger(__name__)
 handler = AzureLogHandler(
-    connection_string="InstrumentationKey=c8c50c58-4baf-457b-b4a9-610c88edf303;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
+    connection_string="InstrumentationKey=6ff4a52b-4e81-4cb1-8779-1cd246782502;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
 )
 handler.setFormatter(logging.Formatter("%(traceId)s %(spanId)s %(message)s"))
 logger.addHandler(handler)
 # Logging custom Events
-logger.addHandler(AzureLogHandler(connection_string="InstrumentationKey=c8c50c58-4baf-457b-b4a9-610c88edf303;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"))
+logger.addHandler(AzureLogHandler(connection_string="InstrumentationKey=6ff4a52b-4e81-4cb1-8779-1cd246782502;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"))
 # Set the logging level
 logger.setLevel(logging.INFO)
 
 
 
 #exporter = # TODO: Setup exporter
-exporter = metrics_exporter.new_metrics_exporter(connection_string="InstrumentationKey=c8c50c58-4baf-457b-b4a9-610c88edf303;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/")
+exporter = metrics_exporter.new_metrics_exporter(connection_string="InstrumentationKey=6ff4a52b-4e81-4cb1-8779-1cd246782502;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/")
 view_manager.register_exporter(exporter)
 
 
@@ -59,7 +59,7 @@ view_manager.register_exporter(exporter)
 config_integration.trace_integrations(['httplib'])
 tracer = Tracer(
     exporter=AzureExporter(
-        connection_string="InstrumentationKey=c8c50c58-4baf-457b-b4a9-610c88edf303;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
+        connection_string="InstrumentationKey=6ff4a52b-4e81-4cb1-8779-1cd246782502;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
     ),
     sampler=ProbabilitySampler(1.0)
 )
@@ -73,7 +73,7 @@ app = Flask(__name__)
 middleware = FlaskMiddleware(
     app,
     exporter=AzureExporter(
-        connection_string="InstrumentationKey=c8c50c58-4baf-457b-b4a9-610c88edf303;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
+        connection_string="InstrumentationKey=6ff4a52b-4e81-4cb1-8779-1cd246782502;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/"
     ),
     sampler=ProbabilitySampler(rate=1.0),
 )
